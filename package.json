@@ -1,0 +1,23 @@
+{
+  "name": "math-quiz",
+  "version": "1.0.0",
+  "description": "Math quiz for Elementary School",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo done.",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HaroldPutman/math-quiz.git"
+  },
+  "author": "HaroldPutman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HaroldPutman/math-quiz/issues"
+  },
+  "homepage": "https://github.com/HaroldPutman/math-quiz#readme",
+  "devDependencies": {
+    "eslint": "^6.4.0"
+  }
+}
