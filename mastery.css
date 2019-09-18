@@ -1,0 +1,83 @@
+#page {
+  width: 530px;
+  margin: auto;
+}
+
+#timer {
+  height: 3px;
+  background-color: green;
+  width: 100%;
+}
+
+#timer.warn {
+  background-color: #ffbf00;
+}
+
+#timer.error {
+  background-color: red;
+}
+
+.prob {
+  font-family: 'Didact Gothic', Arial, sans-serif;
+  font-size: 28pt;
+  text-align:right;
+  width: 1.5em;
+  padding: 4px;
+  display: inline-block;
+  margin-right: 1em;
+  margin-bottom: 0.5em;
+  color: #888;
+}
+.current.prob {
+  color: black;
+  border: 1px solid #ccc;
+}
+.current .op2 {
+  border-color: black;
+}
+.prob div { padding-right: 0.25em; }
+.prob .op2 { border-bottom: 2px solid #888; }
+.correct { color: green; }
+.wrong { color: #800; background-color: #f77; }
+.modal {
+  font-family: 'Didact Gothic', Arial, sans-serif;
+  font-size: 18pt;
+  font-weight: bold;
+  top: 40%;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  padding: 20px;
+  display: none;
+}
+.modal div {
+  padding: 5px 5px 10px 5px;
+}
+.modal .errors {
+  display:none;
+}
+.modal.win {
+  color: white;
+  background-color: green;
+  display: block;
+}
+.modal.win .timeout {
+  display: none;
+}
+.modal.win.errors {
+  color: black;
+  background-color: #f5c73f
+}
+
+.modal.timeout {
+  color: white;
+  background-color: red;
+  display: block;
+}
+.modal.timeout .win {
+  display: none;
+}
+
+.modal.errors .errors {
+  display: block;
+}
