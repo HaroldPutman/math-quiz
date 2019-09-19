@@ -3,8 +3,11 @@
   margin: auto;
 }
 
-#timer {
-  height: 3px;
+#timebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
   background-color: green;
   width: 100%;
 }

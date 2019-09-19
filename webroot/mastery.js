@@ -21,7 +21,12 @@ const problems = [
 { op1: 5, op: '-', op2: 2 }
 ];
 
+const timeAllowed = 120;
+
 var current = 0;
+var timer = null;
+var expired = false;
+var wrongAnswers = 0;
 
 problems.sort(() => Math.random() - 0.5);
 
@@ -40,19 +45,48 @@ document.addEventListener('keydown', (e) => {
   const it = current;
   const probs = document.querySelectorAll('.prob');
   const match = /Digit(\d)/.exec(e.code);
-  if (match) {
+  if (!expired && match) {
+    startTimer();
     const ans = probs[it].querySelector('.ans');
     ans.innerText = match[1];
     if (match[1] == getAnswer(problems[it])) {
       ans.classList.add('correct');
     } else {
       ans.classList.add('wrong');
+      wrongAnswers += 1;
     }
     next();
   }
 });
 
+function startTimer() {
+  if (!timer) {
+    let timeLeft = timeAllowed;
+    const timebar = document.getElementById('timebar');
+    const timespan = document.querySelector('.modal .win span');
+    timer = window.setInterval(() => {
+      timeLeft -= 1;
+      timespan.innerText = timeLeft;
+      const timepct = (timeLeft / timeAllowed * 100);
+      timebar.style.width = timepct + '%';
+      if (timepct < 10) {
+         timebar.classList.add('error');
+      } else if (timepct < 40) {
+        timebar.classList.add('warn');
+      }
+      if (timeLeft <= 0) {
+      	window.stopInterval(timer);
+        expired = true;
+        timer = null;
+      }
+    }, 1000);
+  }
+}
 
+/**
+ * Calculate the correct answer.
+ * @param {object} data
+ */
 function getAnswer(data) {
   let answer = 0;
   switch(data.op) {
@@ -62,9 +96,29 @@ function getAnswer(data) {
     case '+':
       answer = data.op1 + data.op2;
       break;
-  }
+    case '*':
+      answer = data.op1 * data.op2;
+      break;
+    }
   return answer;
 }
+
+
+/**
+ * Handle the end of game.
+ */
+function finish() {
+  const modal = document.querySelector('.modal');
+  if (wrongAnswers > 0) {
+    modal.classList.add('errors');
+  }
+  if (!expired) {
+    modal.classList.add('win');
+  } else {
+    modal.classList.add('timeour');
+  }
+}
+
 /**
  * Advance to the next problem.
  */
@@ -73,11 +127,10 @@ function next() {
   probs[current].classList.remove('current');
   current = (current + 1) % problems.length;
   if (current == 0) {
-    const modal = documengt.querySelector('.modal');
-    model.querySelector('span');
-    modal.classList.add('win');
+    finish();
+  } else {
+    probs[current].classList.add('current');
   }
-  probs[current].classList.add('current');
 }
 
 
