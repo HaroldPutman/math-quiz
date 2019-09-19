@@ -111,11 +111,16 @@ function finish() {
   const modal = document.querySelector('.modal');
   if (wrongAnswers > 0) {
     modal.classList.add('errors');
+    const errors = document.querySelector('.modal .errors span');
+    errors.innerText = wrongAnswers;
   }
   if (!expired) {
     modal.classList.add('win');
   } else {
     modal.classList.add('timeour');
+  }
+  if (timer) {
+    window.clearInterval(timer);
   }
 }
 
