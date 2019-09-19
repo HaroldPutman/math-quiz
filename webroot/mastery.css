@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
 #page {
   width: 530px;
   margin: auto;
@@ -12,11 +17,11 @@
   width: 100%;
 }
 
-#timer.warn {
+#timebar.warn {
   background-color: #ffbf00;
 }
 
-#timer.error {
+#timebar.error {
   background-color: red;
 }
 
@@ -30,6 +35,9 @@
   margin-right: 1em;
   margin-bottom: 0.5em;
   color: #888;
+}
+.prob .op2 {
+  margin-top: -6px;
 }
 .current.prob {
   color: black;
@@ -56,31 +64,32 @@
 .modal div {
   padding: 5px 5px 10px 5px;
 }
-.modal .errors {
-  display:none;
+.win-message,
+.errors-message,
+.timeout-message {
+  display: none;
 }
-.modal.win {
+.modal.perfect {
   color: white;
   background-color: green;
   display: block;
 }
-.modal.win .timeout {
-  display: none;
+.modal.perfect .win-message {
+  display: block;
 }
-.modal.win.errors {
+.modal.sloppy {
   color: black;
-  background-color: #f5c73f
+  background-color: #f5c73f;
+  display: block;
 }
-
-.modal.timeout {
+.modal.slow {
   color: white;
   background-color: red;
   display: block;
 }
-.modal.timeout .win {
-  display: none;
+.modal.slow .timeout-message {
+  display: block;
 }
-
-.modal.errors .errors {
+.modal.errors .errors-message {
   display: block;
 }

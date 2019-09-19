@@ -1,24 +1,25 @@
+// TODO: Read from JSON and allow more natural format.
 const problems = [
-{ op1: 9, op: '-', op2: 2 },
-{ op1: 8, op: '-', op2: 2 },
-{ op1: 7, op: '-', op2: 2 },
-{ op1: 6, op: '-', op2: 2 },
-{ op1: 5, op: '-', op2: 2 },
-{ op1: 4, op: '-', op2: 2 },
-{ op1: 3, op: '-', op2: 2 },
-{ op1: 2, op: '-', op2: 2 },
-{ op1: 9, op: '-', op2: 1 },
-{ op1: 8, op: '-', op2: 1 },
-{ op1: 7, op: '-', op2: 1 },
-{ op1: 6, op: '-', op2: 1 },
-{ op1: 5, op: '-', op2: 1 },
-{ op1: 4, op: '-', op2: 1 },
-{ op1: 3, op: '-', op2: 1 },
-{ op1: 2, op: '-', op2: 1 },
-{ op1: 1, op: '-', op2: 1 },
-{ op1: 7, op: '-', op2: 2 },
-{ op1: 6, op: '-', op2: 1 },
-{ op1: 5, op: '-', op2: 2 }
+  { op1: 9, op: '-', op2: 2 },
+  { op1: 8, op: '-', op2: 2 },
+  { op1: 7, op: '-', op2: 2 },
+  { op1: 6, op: '-', op2: 2 },
+  { op1: 5, op: '-', op2: 2 },
+  { op1: 4, op: '-', op2: 2 },
+  { op1: 3, op: '-', op2: 2 },
+  { op1: 2, op: '-', op2: 2 },
+  { op1: 9, op: '-', op2: 1 },
+  { op1: 8, op: '-', op2: 1 },
+  { op1: 7, op: '-', op2: 1 },
+  { op1: 6, op: '-', op2: 1 },
+  { op1: 5, op: '-', op2: 1 },
+  { op1: 4, op: '-', op2: 1 },
+  { op1: 3, op: '-', op2: 1 },
+  { op1: 2, op: '-', op2: 1 },
+  { op1: 1, op: '-', op2: 1 },
+  { op1: 7, op: '-', op2: 2 },
+  { op1: 6, op: '-', op2: 1 },
+  { op1: 5, op: '-', op2: 2 }
 ];
 
 const timeAllowed = 120;
@@ -28,6 +29,7 @@ var timer = null;
 var expired = false;
 var wrongAnswers = 0;
 
+// TODO: Sort better.
 problems.sort(() => Math.random() - 0.5);
 
 problems.forEach((p, index) => {
@@ -41,6 +43,7 @@ problems.forEach((p, index) => {
   el.appendChild(container);
 });
 
+// TODO: Should support real inputs
 document.addEventListener('keydown', (e) => {
   const it = current;
   const probs = document.querySelectorAll('.prob');
@@ -59,11 +62,16 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+const restartButton = document.getElementById("restart");
+restartButton.addEventListener('click', (e) => {
+  window.location.reload();
+});
+
 function startTimer() {
   if (!timer) {
     let timeLeft = timeAllowed;
     const timebar = document.getElementById('timebar');
-    const timespan = document.querySelector('.modal .win span');
+    const timespan = document.querySelector('.win-message span');
     timer = window.setInterval(() => {
       timeLeft -= 1;
       timespan.innerText = timeLeft;
@@ -75,9 +83,10 @@ function startTimer() {
         timebar.classList.add('warn');
       }
       if (timeLeft <= 0) {
-      	window.stopInterval(timer);
+      	window.clearInterval(timer);
         expired = true;
         timer = null;
+        finish();
       }
     }, 1000);
   }
@@ -106,21 +115,29 @@ function getAnswer(data) {
 
 /**
  * Handle the end of game.
+ * Possible outcomes are:
+ *  - Perfect Before timeout all correct
+ *  - Sloppy Before timeout with some wrong
+ *  - Slow Timeout
  */
 function finish() {
   const modal = document.querySelector('.modal');
   if (wrongAnswers > 0) {
     modal.classList.add('errors');
-    const errors = document.querySelector('.modal .errors span');
+    const errors = document.querySelector('.errors-message span');
     errors.innerText = wrongAnswers;
-  }
-  if (!expired) {
-    modal.classList.add('win');
-  } else {
-    modal.classList.add('timeour');
   }
   if (timer) {
     window.clearInterval(timer);
+  }
+  if (!expired) {
+    if (wrongAnswers == 0) {
+      modal.classList.add('perfect');
+    } else {
+      modal.classList.add('sloppy');
+    }
+  } else {
+    modal.classList.add('slow');
   }
 }
 
@@ -130,8 +147,8 @@ function finish() {
 function next() {
   const probs = document.querySelectorAll('.prob');
   probs[current].classList.remove('current');
-  current = (current + 1) % problems.length;
-  if (current == 0) {
+  current += 1;
+  if (current >= problems.length) {
     finish();
   } else {
     probs[current].classList.add('current');
