@@ -1,25 +1,25 @@
 // TODO: Read from JSON and allow more natural format.
 const problems = [
-  { op1: 9, op: '-', op2: 2 },
-  { op1: 8, op: '-', op2: 2 },
-  { op1: 7, op: '-', op2: 2 },
-  { op1: 6, op: '-', op2: 2 },
-  { op1: 5, op: '-', op2: 2 },
-  { op1: 4, op: '-', op2: 2 },
-  { op1: 3, op: '-', op2: 2 },
-  { op1: 2, op: '-', op2: 2 },
-  { op1: 9, op: '-', op2: 1 },
-  { op1: 8, op: '-', op2: 1 },
-  { op1: 7, op: '-', op2: 1 },
-  { op1: 6, op: '-', op2: 1 },
-  { op1: 5, op: '-', op2: 1 },
-  { op1: 4, op: '-', op2: 1 },
-  { op1: 3, op: '-', op2: 1 },
-  { op1: 2, op: '-', op2: 1 },
-  { op1: 1, op: '-', op2: 1 },
-  { op1: 7, op: '-', op2: 2 },
-  { op1: 6, op: '-', op2: 1 },
-  { op1: 5, op: '-', op2: 2 }
+  { op1: 9, op: "-", op2: 2 },
+  { op1: 8, op: "-", op2: 2 },
+  { op1: 7, op: "-", op2: 2 },
+  { op1: 6, op: "-", op2: 2 },
+  { op1: 5, op: "-", op2: 2 },
+  { op1: 4, op: "-", op2: 2 },
+  { op1: 3, op: "-", op2: 2 },
+  { op1: 2, op: "-", op2: 2 },
+  { op1: 9, op: "-", op2: 1 },
+  { op1: 8, op: "-", op2: 1 },
+  { op1: 7, op: "-", op2: 1 },
+  { op1: 6, op: "-", op2: 1 },
+  { op1: 5, op: "-", op2: 1 },
+  { op1: 4, op: "-", op2: 1 },
+  { op1: 3, op: "-", op2: 1 },
+  { op1: 2, op: "-", op2: 1 },
+  { op1: 1, op: "-", op2: 1 },
+  { op1: 7, op: "-", op2: 2 },
+  { op1: 6, op: "-", op2: 1 },
+  { op1: 5, op: "-", op2: 2 }
 ];
 
 const timeAllowed = 120;
@@ -33,29 +33,29 @@ var wrongAnswers = 0;
 problems.sort(() => Math.random() - 0.5);
 
 problems.forEach((p, index) => {
-  let container = document.createElement("div");
+  let container = document.createElement("article");
   container.classList.add("prob");
   if (index == current) {
     container.classList.add("current");
   }
   container.innerHTML = createProblem(p);
-  const el = document.getElementById('page');
+  const el = document.querySelector(".worksheet");
   el.appendChild(container);
 });
 
 // TODO: Should support real inputs
-document.addEventListener('keydown', (e) => {
+document.addEventListener("keydown", e => {
   const it = current;
-  const probs = document.querySelectorAll('.prob');
+  const probs = document.querySelectorAll(".prob");
   const match = /Digit(\d)/.exec(e.code);
   if (!expired && match) {
     startTimer();
-    const ans = probs[it].querySelector('.ans');
+    const ans = probs[it].querySelector(".ans");
     ans.innerText = match[1];
     if (match[1] == getAnswer(problems[it])) {
-      ans.classList.add('correct');
+      ans.classList.add("correct");
     } else {
-      ans.classList.add('wrong');
+      ans.classList.add("wrong");
       wrongAnswers += 1;
     }
     next();
@@ -63,27 +63,27 @@ document.addEventListener('keydown', (e) => {
 });
 
 const restartButton = document.getElementById("restart");
-restartButton.addEventListener('click', (e) => {
+restartButton.addEventListener("click", () => {
   window.location.reload();
 });
 
 function startTimer() {
   if (!timer) {
     let timeLeft = timeAllowed;
-    const timebar = document.getElementById('timebar');
-    const timespan = document.querySelector('.win-message span');
+    const timebar = document.getElementById("timebar");
+    const timespan = document.querySelector(".win-message span");
     timer = window.setInterval(() => {
       timeLeft -= 1;
       timespan.innerText = timeLeft;
-      const timepct = (timeLeft / timeAllowed * 100);
-      timebar.style.width = timepct + '%';
+      const timepct = (timeLeft / timeAllowed) * 100;
+      timebar.style.width = timepct + "%";
       if (timepct < 10) {
-         timebar.classList.add('error');
+        timebar.classList.add("error");
       } else if (timepct < 40) {
-        timebar.classList.add('warn');
+        timebar.classList.add("warn");
       }
       if (timeLeft <= 0) {
-      	window.clearInterval(timer);
+        window.clearInterval(timer);
         expired = true;
         timer = null;
         finish();
@@ -98,20 +98,19 @@ function startTimer() {
  */
 function getAnswer(data) {
   let answer = 0;
-  switch(data.op) {
-    case '-':
+  switch (data.op) {
+    case "-":
       answer = data.op1 - data.op2;
       break;
-    case '+':
+    case "+":
       answer = data.op1 + data.op2;
       break;
-    case '*':
+    case "*":
       answer = data.op1 * data.op2;
       break;
-    }
+  }
   return answer;
 }
-
 
 /**
  * Handle the end of game.
@@ -121,10 +120,10 @@ function getAnswer(data) {
  *  - Slow Timeout
  */
 function finish() {
-  const modal = document.querySelector('.modal');
+  const modal = document.querySelector(".modal");
   if (wrongAnswers > 0) {
-    modal.classList.add('errors');
-    const errors = document.querySelector('.errors-message span');
+    modal.classList.add("errors");
+    const errors = document.querySelector(".errors-message span");
     errors.innerText = wrongAnswers;
   }
   if (timer) {
@@ -132,12 +131,12 @@ function finish() {
   }
   if (!expired) {
     if (wrongAnswers == 0) {
-      modal.classList.add('perfect');
+      modal.classList.add("perfect");
     } else {
-      modal.classList.add('sloppy');
+      modal.classList.add("sloppy");
     }
   } else {
-    modal.classList.add('slow');
+    modal.classList.add("slow");
   }
 }
 
@@ -145,19 +144,18 @@ function finish() {
  * Advance to the next problem.
  */
 function next() {
-  const probs = document.querySelectorAll('.prob');
-  probs[current].classList.remove('current');
+  const probs = document.querySelectorAll(".prob");
+  probs[current].classList.remove("current");
   current += 1;
   if (current >= problems.length) {
     finish();
   } else {
-    probs[current].classList.add('current');
+    probs[current].classList.add("current");
   }
 }
 
-
 function createProblem(data) {
- return `
+  return `
    <div class="op1">${data.op1}</div>
    <div class="op2">${data.op} ${data.op2}</div>
    <div class="ans">&nbsp;</div>`;

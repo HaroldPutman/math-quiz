@@ -3,9 +3,14 @@ body {
   padding: 0;
 }
 
-#page {
-  width: 530px;
-  margin: auto;
+.worksheet {
+  max-width: 28em;
+  margin: 0 auto 30px;
+}
+.worksheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4em, 1fr));
+  grid-gap: 2em;
 }
 
 #timebar {
