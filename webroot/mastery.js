@@ -22,50 +22,21 @@ const problems = [
   { op1: 5, op: "-", op2: 2 }
 ];
 
+/**
+ * When to start the timer?
+ *   - From a Go button that covers the screen
+ *   - From the first number entry
+ * When to show right and wrong answers?
+ *   - On blur (just one)
+ *   - When all are completed (all)
+ *   - When time expires. (all)
+ * */
+
 const timeAllowed = 120;
 
-var current = 0;
 var timer = null;
 var expired = false;
 var wrongAnswers = 0;
-
-// TODO: Sort better.
-problems.sort(() => Math.random() - 0.5);
-
-problems.forEach((p, index) => {
-  let container = document.createElement("article");
-  container.classList.add("prob");
-  if (index == current) {
-    container.classList.add("current");
-  }
-  container.innerHTML = createProblem(p);
-  const el = document.querySelector(".worksheet");
-  el.appendChild(container);
-});
-
-// TODO: Should support real inputs
-document.addEventListener("keydown", e => {
-  const it = current;
-  const probs = document.querySelectorAll(".prob");
-  const match = /Digit(\d)/.exec(e.code);
-  if (!expired && match) {
-    startTimer();
-    const ans = probs[it].querySelector(".ans");
-    ans.innerText = match[1];
-    if (match[1] == getAnswer(problems[it])) {
-      ans.classList.add("correct");
-    } else {
-      ans.classList.add("wrong");
-      wrongAnswers += 1;
-    }
-    next();
-  }
-});
-
-const restartButton = document.getElementById("restart");
-restartButton.addEventListener("click", () => {
-  window.location.reload();
-});
 
 function startTimer() {
   if (!timer) {
@@ -84,9 +55,8 @@ function startTimer() {
       }
       if (timeLeft <= 0) {
         window.clearInterval(timer);
-        expired = true;
         timer = null;
-        finish();
+        finish(score(true), true);
       }
     }, 1000);
   }
@@ -119,18 +89,15 @@ function getAnswer(data) {
  *  - Sloppy Before timeout with some wrong
  *  - Slow Timeout
  */
-function finish() {
+function finish(results, expired) {
   const modal = document.querySelector(".modal");
-  if (wrongAnswers > 0) {
+  if (results.wrong > 0) {
     modal.classList.add("errors");
     const errors = document.querySelector(".errors-message span");
-    errors.innerText = wrongAnswers;
-  }
-  if (timer) {
-    window.clearInterval(timer);
+    errors.innerText = results.wrong;
   }
   if (!expired) {
-    if (wrongAnswers == 0) {
+    if (results.wrong == 0 && results.unanswered == 0) {
       modal.classList.add("perfect");
     } else {
       modal.classList.add("sloppy");
@@ -140,23 +107,62 @@ function finish() {
   }
 }
 
-/**
- * Advance to the next problem.
- */
-function next() {
-  const probs = document.querySelectorAll(".prob");
-  probs[current].classList.remove("current");
-  current += 1;
-  if (current >= problems.length) {
-    finish();
-  } else {
-    probs[current].classList.add("current");
-  }
+function score(show) {
+  const inputs = document.querySelectorAll("article input");
+  let unanswered = 0;
+  let wrong = 0;
+  inputs.forEach((inp) => {
+    if (inp.value.length == 0) {
+      unanswered += 1
+    } else if (inp.value != inp.dataset.answer) {
+      if (show) {
+        inp.classList.add('incorrect');
+      }
+      wrong += 1;
+    } else if (show) {
+      inp.classList.add('correct');
+    }
+  });
+  return { unanswered, wrong };
 }
 
+// TODO: use template
+// TODO: Store answer as data-answer
 function createProblem(data) {
+  const answer = getAnswer(data);
   return `
    <div class="op1">${data.op1}</div>
    <div class="op2">${data.op} ${data.op2}</div>
-   <div class="ans">&nbsp;</div>`;
+   <input type="text" pattern="\\d*" data-answer="${answer}"/>`;
 }
+
+// TODO: Sort better.
+problems.sort(() => Math.random() - 0.5);
+
+// Populate the worksheet
+problems.forEach((p) => {
+  let container = document.createElement("article");
+  container.classList.add("prob");
+  container.innerHTML = createProblem(p);
+  const el = document.querySelector(".worksheet");
+  el.appendChild(container);
+});
+
+// TODO: Should support real inputs
+const inputs = document.querySelectorAll("article input");
+inputs.forEach((inp) => {
+  // Start timer on first keypress
+  inp.addEventListener('keypress', startTimer);
+  inp.addEventListener('blur', (evt) => {
+    const result = score(false);
+    if (result.unanswered == 0) {
+      finish(score(true));
+    }
+  })
+});
+
+const restartButton = document.getElementById("restart");
+restartButton.addEventListener("click", () => {
+  window.location.reload();
+});
+

@@ -30,12 +30,22 @@ body {
   background-color: red;
 }
 
-.prob {
+.prob,
+.prob input {
   font-family: 'Didact Gothic', Arial, sans-serif;
   font-size: 28pt;
+}
+
+.prob input {
+  width: 1.15em;
+  text-align: right;
+  padding: 0 4px;
+}
+
+.prob {
   text-align:right;
   width: 1.5em;
-  padding: 4px;
+  padding: 4px 0;
   display: inline-block;
   margin-right: 1em;
   margin-bottom: 0.5em;
@@ -44,9 +54,9 @@ body {
 .prob .op2 {
   margin-top: -6px;
 }
-.current.prob {
+.prob:focus-within {
   color: black;
-  border: 1px solid #ccc;
+  background-color:  #eee;
 }
 .current .op2 {
   border-color: black;
@@ -54,7 +64,7 @@ body {
 .prob div { padding-right: 0.25em; }
 .prob .op2 { border-bottom: 2px solid #888; }
 .correct { color: green; }
-.wrong { color: #800; background-color: #f77; }
+.incorrect { color: #800; background-color: #f77; }
 .modal {
   font-family: 'Didact Gothic', Arial, sans-serif;
   font-size: 18pt;
